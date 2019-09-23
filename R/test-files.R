@@ -147,10 +147,15 @@ test_file <- function(path,
       reporter$start_file(basename(path))
       lister$start_file(basename(path))
 
-      source_file(
+      result <- source_file(
         path, new.env(parent = env),
         chdir = TRUE, wrap = wrap
       )
+
+      if (!result) {
+        # Trying to add a failure, but this doesn't work:
+        reporter$add_result(context = reporter$.context, test = basename(path), result = expectation("error", "Test died"))
+      }
 
       reporter$.end_context() # only ends if context was started
       reporter$end_file()
